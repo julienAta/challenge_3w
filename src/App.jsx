@@ -1,34 +1,26 @@
-import { useState } from "react";
-
+import { useReducer } from "react";
 import "./App.css";
+import numbersReducer from "./numbersReducer";
+
+const initialState = {
+  numbers: [],
+  pairs: [],
+  maxNumbers: 10,
+};
 
 function App() {
-  const [numbers, setNumbers] = useState([]);
-  const [pairs, setPairs] = useState([]);
-  const maxNumbers = 10;
+  const [state, dispatch] = useReducer(numbersReducer, initialState);
 
   const addNumber = () => {
-    if (numbers.length < maxNumbers) {
-      const newNumber = Math.floor(Math.random() * 30) + 1;
-      if (!numbers.includes(newNumber)) {
-        setNumbers([...numbers, newNumber]);
-      }
-    } else {
-      alert("La liste a atteint son maximum");
-    }
+    dispatch({ type: "ADD_NUMBER" });
   };
 
   const generatePairs = () => {
-    let tempPairs = [];
-    for (let i = 0; i < numbers.length; i += 2) {
-      tempPairs.push(numbers.slice(i, i + 2));
-    }
-    setPairs(tempPairs);
+    dispatch({ type: "GENERATE_PAIRS" });
   };
 
   const clearList = () => {
-    setNumbers([]);
-    setPairs([]);
+    dispatch({ type: "CLEAR" });
   };
 
   return (
@@ -36,10 +28,10 @@ function App() {
       <div>
         <button onClick={addNumber}>Ajouter un nombre</button>
         <button onClick={clearList}>Supprimer la liste</button>
-        <div>Liste : {numbers.join(", ")}</div>
+        <div>Liste : {state.numbers.join(", ")}</div>
         <button onClick={generatePairs}>Générer les binômes</button>
         <div>
-          {pairs.map((pair, index) => (
+          {state.pairs.map((pair, index) => (
             <div key={index}>{pair.join(", ")}</div>
           ))}
         </div>
